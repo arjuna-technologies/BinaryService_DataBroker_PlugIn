@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015, Arjuna Technologies Limited, Newcastle-upon-Tyne, England. All rights reserved.
+ * Copyright (c) 2015, Arjuna Technologies Limited, Newcastle-upon-Tyne, England. All rights reserved.
  */
 
 package com.arjuna.dbplugins.binaryservice;
@@ -11,13 +11,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.InitialContext;
 import com.arjuna.databroker.data.DataFlow;
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataSource;
 import com.arjuna.databroker.data.jee.annotation.DataProviderInjection;
 import com.arjuna.databroker.data.jee.annotation.PostActivated;
 import com.arjuna.databroker.data.jee.annotation.PostConfig;
+import com.arjuna.databroker.data.jee.annotation.PostCreated;
 import com.arjuna.databroker.data.jee.annotation.PostRecovery;
+import com.arjuna.databroker.data.jee.annotation.PreDeactivated;
 
 public class BinaryAcceptorDataSource implements DataSource
 {
@@ -27,23 +30,50 @@ public class BinaryAcceptorDataSource implements DataSource
 
     public BinaryAcceptorDataSource()
     {
-        logger.log(Level.FINE, "BinaryServiceDataSource");
+        logger.log(Level.FINE, "BinaryAcceptorDataSource");
     }
 
     public BinaryAcceptorDataSource(String name, Map<String, String> properties)
     {
-        logger.log(Level.FINE, "BinaryServiceDataSource: " + name + ", " + properties);
+        logger.log(Level.FINE, "BinaryAcceptorDataSource: " + name + ", " + properties);
 
         _name          = name;
         _properties    = properties;
+
+        try
+        {
+        	_binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
+        }
+        catch (Throwable throwable)
+        {
+            logger.log(Level.WARNING, "BinaryAcceptorDispatcher: no binaryAcceptorDispatcher found", throwable);
+        }
+    }
+
+    @PostCreated
+    @PostRecovery
+    @PostConfig
+    public void configure()
+    {
+        _endpointPath = _properties.get(ENDPOINTPATH_PROPERTYNAME);
     }
 
     @PostActivated
-    @PostRecovery
-    @PostConfig
-    public void deactivateTimer()
+    public void register()
     {
-        _endpointPath = _properties.get(ENDPOINTPATH_PROPERTYNAME);
+        if (_binaryAcceptorDispatcher != null)
+        	_binaryAcceptorDispatcher.register(_endpointPath, this);
+        else
+            logger.log(Level.WARNING, "BinaryAcceptorDispatcher.doRegister: no binaryAcceptorDispatcher");
+    }
+
+    @PreDeactivated
+    public void unregister()
+    {
+        if (_binaryAcceptorDispatcher != null)
+        	_binaryAcceptorDispatcher.unregister(_endpointPath);
+        else
+            logger.log(Level.WARNING, "BinaryAcceptorDispatcher.doUnregister: no binaryAcceptorDispatcher");
     }
 
     @Override
@@ -109,9 +139,12 @@ public class BinaryAcceptorDataSource implements DataSource
 
     private String _endpointPath;
 
-    private DataFlow               _dataFlow;
-    private String                 _name;
-    private Map<String, String>    _properties;
+    private DataFlow             _dataFlow;
+    private String               _name;
+    private Map<String, String>  _properties;
     @DataProviderInjection
     private DataProvider<String> _dataProvider;
+
+    private BinaryAcceptorDispatcher _binaryAcceptorDispatcher;
+
 }

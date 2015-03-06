@@ -26,12 +26,13 @@ public class BinaryAcceptorService
     @POST
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void acceptBinary(@PathParam("id") String id, String putProposeAgreementRequest)
+    public void acceptBinary(@PathParam("id") String id, String data)
     {
         logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: [" + id + "]");
 
         try
         {
+        	_binaryAcceptorDispatcher.dispatch(id, data);
         }
         catch (Throwable throwable)
         {
