@@ -31,6 +31,15 @@ public class BinaryAcceptorDataSource implements DataSource
     public BinaryAcceptorDataSource()
     {
         logger.log(Level.FINE, "BinaryAcceptorDataSource");
+
+        try
+        {
+            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
+        }
+        catch (Throwable throwable)
+        {
+            logger.log(Level.WARNING, "BinaryAcceptorDispatcher: no binaryAcceptorDispatcher found", throwable);
+        }
     }
 
     public BinaryAcceptorDataSource(String name, Map<String, String> properties)
@@ -42,7 +51,7 @@ public class BinaryAcceptorDataSource implements DataSource
 
         try
         {
-        	_binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
+            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
         }
         catch (Throwable throwable)
         {
@@ -62,18 +71,18 @@ public class BinaryAcceptorDataSource implements DataSource
     public void register()
     {
         if (_binaryAcceptorDispatcher != null)
-        	_binaryAcceptorDispatcher.register(_endpointPath, this);
+            _binaryAcceptorDispatcher.register(_endpointPath, this);
         else
-            logger.log(Level.WARNING, "BinaryAcceptorDispatcher.doRegister: no binaryAcceptorDispatcher");
+            logger.log(Level.WARNING, "BinaryAcceptorDataSource.register: no binaryAcceptorDispatcher");
     }
 
     @PreDeactivated
     public void unregister()
     {
         if (_binaryAcceptorDispatcher != null)
-        	_binaryAcceptorDispatcher.unregister(_endpointPath);
+            _binaryAcceptorDispatcher.unregister(_endpointPath);
         else
-            logger.log(Level.WARNING, "BinaryAcceptorDispatcher.doUnregister: no binaryAcceptorDispatcher");
+            logger.log(Level.WARNING, "BinaryAcceptorDispatcher.unregister: no binaryAcceptorDispatcher");
     }
 
     @Override
@@ -114,6 +123,8 @@ public class BinaryAcceptorDataSource implements DataSource
     
     public void dispatch(String data)
     {
+        logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length() + ")");
+
         _dataProvider.produce(data);
     }
     

@@ -10,8 +10,10 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,16 +25,20 @@ public class BinaryAcceptorService
 {
     private static final Logger logger = Logger.getLogger(BinaryAcceptorService.class.getName());
 
+    @PUT
     @POST
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void acceptBinary(@PathParam("id") String id, String data)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public String acceptBinary(@PathParam("id") String id, String data)
     {
         logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: [" + id + "]");
 
         try
         {
-        	_binaryAcceptorDispatcher.dispatch(id, data);
+            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (length = " + data.length() + ")");
+
+            _binaryAcceptorDispatcher.dispatch(id, data);
         }
         catch (Throwable throwable)
         {
@@ -40,6 +46,8 @@ public class BinaryAcceptorService
 
             throw new WebApplicationException(throwable, Response.Status.INTERNAL_SERVER_ERROR);
         }
+
+        return "OK";
     }
 
     @EJB

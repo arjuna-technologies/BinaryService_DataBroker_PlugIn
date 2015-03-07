@@ -34,7 +34,7 @@ public class BinaryAcceptorDispatcher
             if (binaryAcceptorDataSource != null)
                 binaryAcceptorDataSource.dispatch(data);
             else
-                logger.log(Level.FINE, "BinaryAcceptorDispatcher.dispatch: unable to find 'dom document acceptor data source': " + id);
+                logger.log(Level.WARNING, "BinaryAcceptorDispatcher.dispatch: unable to find 'dom document acceptor data source': " + id);
         }
     }
 
