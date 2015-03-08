@@ -30,13 +30,13 @@ public class BinaryAcceptorService
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public String acceptBinary(@PathParam("id") String id, String data)
+    public String acceptBinary(@PathParam("id") String id, byte[] data)
     {
         logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: [" + id + "]");
 
         try
         {
-            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (length = " + data.length() + ")");
+            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (length = " + data.length + ")");
 
             _binaryAcceptorDispatcher.dispatch(id, data);
         }

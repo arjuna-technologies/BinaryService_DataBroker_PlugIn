@@ -23,7 +23,7 @@ public class BinaryAcceptorDispatcher
         _binaryAcceptorDataSourceMap = new HashMap<String, BinaryAcceptorDataSource>();
     }
 
-    public void dispatch(String id, String data)
+    public void dispatch(String id, byte[] data)
     {
         synchronized (_syncObject)
         {

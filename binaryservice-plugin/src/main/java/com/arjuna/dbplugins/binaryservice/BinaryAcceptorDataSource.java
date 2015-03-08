@@ -121,9 +121,10 @@ public class BinaryAcceptorDataSource implements DataSource
         _properties = properties;
     }
     
-    public void dispatch(String data)
+    public void dispatch(byte[] data)
     {
-        logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length() + ")");
+        logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length + ")");
+        System.err.println("BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length + ")");
 
         _dataProvider.produce(data);
     }
@@ -133,7 +134,7 @@ public class BinaryAcceptorDataSource implements DataSource
     {
         Set<Class<?>> dataProviderDataClasses = new HashSet<Class<?>>();
 
-        dataProviderDataClasses.add(String.class);
+        dataProviderDataClasses.add(byte[].class);
 
         return dataProviderDataClasses;
     }
@@ -142,7 +143,7 @@ public class BinaryAcceptorDataSource implements DataSource
     @SuppressWarnings("unchecked")
     public <T> DataProvider<T> getDataProvider(Class<T> dataClass)
     {
-        if (dataClass == String.class)
+        if (dataClass == byte[].class)
             return (DataProvider<T>) _dataProvider;
         else
             return null;
@@ -154,7 +155,7 @@ public class BinaryAcceptorDataSource implements DataSource
     private String               _name;
     private Map<String, String>  _properties;
     @DataProviderInjection
-    private DataProvider<String> _dataProvider;
+    private DataProvider<byte[]> _dataProvider;
 
     private BinaryAcceptorDispatcher _binaryAcceptorDispatcher;
 
