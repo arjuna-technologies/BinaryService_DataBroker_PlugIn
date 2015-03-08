@@ -124,7 +124,6 @@ public class BinaryAcceptorDataSource implements DataSource
     public void dispatch(byte[] data)
     {
         logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length + ")");
-        System.err.println("BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length + ")");
 
         _dataProvider.produce(data);
     }
