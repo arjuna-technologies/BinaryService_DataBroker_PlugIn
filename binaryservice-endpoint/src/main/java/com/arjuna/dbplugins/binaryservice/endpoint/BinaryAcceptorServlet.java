@@ -53,7 +53,7 @@ public class BinaryAcceptorServlet extends HttpServlet
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     private static byte[] getBytes(InputStream inputStream)
         throws IOException
     {

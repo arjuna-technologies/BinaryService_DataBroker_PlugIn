@@ -81,7 +81,7 @@
 
         <profile>
             <id>wildfly</id>
-    
+
             <build>
                 <plugins>
                     <plugin>

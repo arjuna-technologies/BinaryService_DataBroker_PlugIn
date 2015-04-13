@@ -120,14 +120,14 @@ public class BinaryAcceptorDataSource implements DataSource
     {
         _properties = properties;
     }
-    
+
     public void dispatch(byte[] data)
     {
         logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (length = " + data.length + ")");
 
         _dataProvider.produce(data);
     }
-    
+
     @Override
     public Collection<Class<?>> getDataProviderDataClasses()
     {

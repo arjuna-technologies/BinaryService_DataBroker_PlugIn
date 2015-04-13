@@ -1,7 +1,7 @@
 BinaryService_DataBroker_PlugIn
 ===============================
 
-DataBroker plugIn which support Binary Service integration 
+DataBroker plugIn which support Binary Service integration
 
 License
 =======
