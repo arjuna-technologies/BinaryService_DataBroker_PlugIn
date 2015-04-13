@@ -17,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.util.GenericType;
 import com.arjuna.dbplugins.binaryservice.BinaryAcceptorDispatcher;
 
 @Path("/endpoints")
@@ -39,6 +41,38 @@ public class BinaryAcceptorService
             logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (length = " + data.length + ")");
 
             _binaryAcceptorDispatcher.dispatch(id, data);
+        }
+        catch (Throwable throwable)
+        {
+            logger.log(Level.WARNING, "BinaryAcceptorService.acceptBinary: Unable to process binary", throwable);
+
+            throw new WebApplicationException(throwable, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        return "OK";
+    }
+
+    @PUT
+    @POST
+    @Path("/{id}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public String acceptBinary(@PathParam("id") String id, MultipartFormDataInput multipartFormDataInput)
+    {
+        try
+        {
+            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\"");
+
+            byte[] data = multipartFormDataInput.getFormDataPart("file", new GenericType<byte[]>() {});
+
+            if (data != null)
+            {
+                logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (data length = " + data.length + ")");
+
+                _binaryAcceptorDispatcher.dispatch(id, data);
+            }
+            else
+                logger.log(Level.WARNING, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (data is null)");
         }
         catch (Throwable throwable)
         {
