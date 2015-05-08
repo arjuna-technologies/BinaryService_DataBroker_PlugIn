@@ -32,7 +32,10 @@ public class BinaryAcceptorDispatcher
             BinaryAcceptorDataSource binaryAcceptorDataSource = _binaryAcceptorDataSourceMap.get(id);
 
             if (binaryAcceptorDataSource != null)
-                binaryAcceptorDataSource.dispatch(data);
+            {
+                DispatchWorker dispatchWorker = new DispatchWorker(binaryAcceptorDataSource, data);
+                dispatchWorker.start();
+            }
             else
                 logger.log(Level.WARNING, "BinaryAcceptorDispatcher.dispatch: unable to find 'dom document acceptor data source': " + id);
         }
@@ -62,6 +65,25 @@ public class BinaryAcceptorDispatcher
 
             return _binaryAcceptorDataSourceMap.remove(id) != null;
         }
+    }
+
+    private class DispatchWorker extends Thread
+    {
+        public DispatchWorker(BinaryAcceptorDataSource binaryAcceptorDataSource, byte[] data)
+        {
+            _binaryAcceptorDataSource = binaryAcceptorDataSource;
+            _data                     = data;
+        }
+
+        public void run()
+        {
+            logger.log(Level.FINE, "BinaryAcceptorDispatcher:DispatchWorker.run: start");
+            _binaryAcceptorDataSource.dispatch(_data);
+            logger.log(Level.FINE, "BinaryAcceptorDispatcher:DispatchWorker.run: complete");
+        }
+
+        private BinaryAcceptorDataSource _binaryAcceptorDataSource;
+        private byte[]                   _data;
     }
 
     private Object                                _syncObject;
