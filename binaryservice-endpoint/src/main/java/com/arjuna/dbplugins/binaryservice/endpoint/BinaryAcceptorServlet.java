@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -38,7 +40,9 @@ public class BinaryAcceptorServlet extends HttpServlet
 
             logger.log(Level.FINE, "BinaryAcceptorServlet.doPost: on \"" + id + "\" (length = " + data.length + ")");
 
-            _binaryAcceptorDispatcher.dispatch(id, data);
+            Map<String, Object> fields = new HashMap<String, Object>();
+            fields.put("data", data);
+            _binaryAcceptorDispatcher.dispatch(id, fields);
 
             PrintWriter writer = response.getWriter();
             writer.println("OK");

@@ -23,7 +23,7 @@ public class BinaryAcceptorDispatcher
         _binaryAcceptorDataSourceMap = new HashMap<String, BinaryAcceptorDataSource>();
     }
 
-    public void dispatch(String id, byte[] data)
+    public void dispatch(String id, Map<String, Object> map)
     {
         synchronized (_syncObject)
         {
@@ -33,7 +33,7 @@ public class BinaryAcceptorDispatcher
 
             if (binaryAcceptorDataSource != null)
             {
-                DispatchWorker dispatchWorker = new DispatchWorker(binaryAcceptorDataSource, data);
+                DispatchWorker dispatchWorker = new DispatchWorker(binaryAcceptorDataSource, map);
                 dispatchWorker.start();
             }
             else
@@ -69,21 +69,21 @@ public class BinaryAcceptorDispatcher
 
     private class DispatchWorker extends Thread
     {
-        public DispatchWorker(BinaryAcceptorDataSource binaryAcceptorDataSource, byte[] data)
+        public DispatchWorker(BinaryAcceptorDataSource binaryAcceptorDataSource, Map<String, Object> fields)
         {
             _binaryAcceptorDataSource = binaryAcceptorDataSource;
-            _data                     = data;
+            _fields                   = fields;
         }
 
         public void run()
         {
             logger.log(Level.FINE, "BinaryAcceptorDispatcher:DispatchWorker.run: start");
-            _binaryAcceptorDataSource.dispatch(_data);
+            _binaryAcceptorDataSource.dispatch(_fields);
             logger.log(Level.FINE, "BinaryAcceptorDispatcher:DispatchWorker.run: complete");
         }
 
         private BinaryAcceptorDataSource _binaryAcceptorDataSource;
-        private byte[]                   _data;
+        private Map<String, Object>      _fields;
     }
 
     private Object                                _syncObject;

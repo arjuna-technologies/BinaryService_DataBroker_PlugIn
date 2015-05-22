@@ -4,6 +4,9 @@
 
 package com.arjuna.dbplugins.binaryservice.endpoint;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -16,7 +19,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
 import com.arjuna.dbplugins.binaryservice.BinaryAcceptorDispatcher;
@@ -32,15 +37,15 @@ public class BinaryAcceptorService
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public String acceptBinary(@PathParam("id") String id, byte[] data)
+    public String acceptBinary(@PathParam("id") String id, Map<String, Object> fields)
     {
         logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: [" + id + "]");
 
         try
         {
-            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (length = " + data.length + ")");
+            logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (field number = " + fields.size() + ")");
 
-            _binaryAcceptorDispatcher.dispatch(id, data);
+            _binaryAcceptorDispatcher.dispatch(id, fields);
         }
         catch (Throwable throwable)
         {
@@ -63,16 +68,22 @@ public class BinaryAcceptorService
         {
             logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\"");
 
-            byte[] data = multipartFormDataInput.getFormDataPart("file", new GenericType<byte[]>() {});
-
+            Map<String, Object> fields   = new HashMap<String, Object>();
+            byte[]              data     = multipartFormDataInput.getFormDataPart("file", new GenericType<byte[]>() {});
+            String              filename = findFilename(multipartFormDataInput.getFormDataMap().get("file"));
             if (data != null)
-            {
-                logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (data length = " + data.length + ")");
+                fields.put("data", data);
+            if (filename != null)
+                fields.put("filename", filename);
 
-                _binaryAcceptorDispatcher.dispatch(id, data);
+            if (fields.size() != 0)
+            {
+                logger.log(Level.FINE, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (field number = " + fields.size() + ")");
+
+                _binaryAcceptorDispatcher.dispatch(id, fields);
             }
             else
-                logger.log(Level.WARNING, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (data is null)");
+                logger.log(Level.WARNING, "BinaryAcceptorService.acceptBinary: on \"" + id + "\" (field number is 0)");
         }
         catch (Throwable throwable)
         {
@@ -82,6 +93,24 @@ public class BinaryAcceptorService
         }
 
         return "OK";
+    }
+
+    private String findFilename(List<InputPart> inputParts)
+    {
+        String filename = null;
+
+        for (InputPart inputPart: inputParts)
+            if (filename == null)
+            {
+                MultivaluedMap<String, String> multivaluedMap     = inputPart.getHeaders();
+                String[]                       contentDisposition = multivaluedMap.getFirst("Content-Disposition").split(";");
+
+                for (String possibleFilename : contentDisposition)
+                    if (possibleFilename.trim().startsWith("filename"))
+                        filename = possibleFilename.split("=")[1].trim().replaceAll("\"", "");
+            }
+
+        return filename;
     }
 
     @EJB
