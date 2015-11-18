@@ -113,6 +113,24 @@ public class BinaryAcceptorService
         return filename;
     }
 
+    private String findPassword(List<InputPart> inputParts)
+    {
+        String password = null;
+
+        for (InputPart inputPart: inputParts)
+            if (password == null)
+            {
+                MultivaluedMap<String, String> multivaluedMap     = inputPart.getHeaders();
+                String[]                       contentDisposition = multivaluedMap.getFirst("Content-Disposition").split(";");
+
+                for (String possiblePassword : contentDisposition)
+                    if (possiblePassword.trim().startsWith("password"))
+                        password = possiblePassword.split("=")[1].trim().replaceAll("\"", "");
+            }
+
+        return password;
+    }
+
     @EJB
     private BinaryAcceptorDispatcher _binaryAcceptorDispatcher;
 }
