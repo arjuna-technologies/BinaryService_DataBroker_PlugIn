@@ -71,10 +71,13 @@ public class BinaryAcceptorService
             Map<String, Object> fields   = new HashMap<String, Object>();
             byte[]              data     = multipartFormDataInput.getFormDataPart("file", new GenericType<byte[]>() {});
             String              filename = findFilename(multipartFormDataInput.getFormDataMap().get("file"));
+            String              password = findPassword(multipartFormDataInput.getFormDataMap().get("password"));
             if (data != null)
                 fields.put("data", data);
             if (filename != null)
                 fields.put("filename", filename);
+            if (password != null)
+                fields.put("password", password);
 
             if (fields.size() != 0)
             {
