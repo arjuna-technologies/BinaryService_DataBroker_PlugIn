@@ -124,7 +124,6 @@ public class BinaryAcceptorDataSource implements DataSource
     public void dispatch(Map<String, Object> fields)
     {
         logger.log(Level.FINE, "BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (field number = " + fields.size() + ")");
-        System.err.println("BinaryAcceptorDataSource.dispatch: on \"" + _endpointPath + "\" (field number = " + fields.size() + ")");
 
         _dataProviderBytes.produce((byte[]) fields.get("data"));
         _dataProviderMap.produce((Map) fields);
