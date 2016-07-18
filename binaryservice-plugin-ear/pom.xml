@@ -10,14 +10,14 @@
     <parent>
         <groupId>com.arjuna.dbplugins.binaryservice</groupId>
         <artifactId>binaryservice-plugin-parent</artifactId>
-        <version>1.0.0p1m1</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>binaryservice-plugin-ear</artifactId>
 
     <packaging>ear</packaging>
 
-    <name>BinaryService DataBroker Plugin EAR</name>
+    <name>Binary Service DataBroker Plugin EAR</name>
 
     <dependencies>
         <dependency>

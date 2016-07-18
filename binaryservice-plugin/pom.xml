@@ -10,14 +10,14 @@
     <parent>
         <groupId>com.arjuna.dbplugins.binaryservice</groupId>
         <artifactId>binaryservice-plugin-parent</artifactId>
-        <version>1.0.0p1m1</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>binaryservice-plugin</artifactId>
 
     <packaging>ejb</packaging>
 
-    <name>BinaryService DataBroker Plugin</name>
+    <name>Binary Service DataBroker Plugin</name>
 
     <dependencies>
         <dependency>

@@ -9,15 +9,15 @@
 
     <groupId>com.arjuna.dbplugins.binaryservice</groupId>
     <artifactId>binaryservice-plugin-parent</artifactId>
-    <version>1.0.0p1m1</version>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
-    <name>BinaryService DataBroker PlugIn Parent</name>
+    <name>Binary Service DataBroker PlugIn Parent</name>
 
     <properties>
-        <version.com.arjuna.dbplugins.binaryservice>1.0.0p1m1</version.com.arjuna.dbplugins.binaryservice>
-        <version.com.arjuna.databroker>1.0.0p1m3l</version.com.arjuna.databroker>
+        <version.com.arjuna.dbplugins.binaryservice>1.0.0</version.com.arjuna.dbplugins.binaryservice>
+        <version.com.arjuna.databroker>1.0.0</version.com.arjuna.databroker>
 
         <jboss-as.username>username</jboss-as.username>
         <jboss-as.password>password</jboss-as.password>

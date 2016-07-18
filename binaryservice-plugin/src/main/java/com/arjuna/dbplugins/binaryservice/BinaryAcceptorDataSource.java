@@ -34,7 +34,7 @@ public class BinaryAcceptorDataSource implements DataSource
 
         try
         {
-            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
+            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0/binaryservice-plugin-1.0.0/BinaryAcceptorDispatcher");
         }
         catch (Throwable throwable)
         {
@@ -51,7 +51,7 @@ public class BinaryAcceptorDataSource implements DataSource
 
         try
         {
-            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0p1m1/binaryservice-plugin-1.0.0p1m1/BinaryAcceptorDispatcher");
+            _binaryAcceptorDispatcher = (BinaryAcceptorDispatcher) new InitialContext().lookup("java:global/binaryservice-plugin-ear-1.0.0/binaryservice-plugin-1.0.0/BinaryAcceptorDispatcher");
         }
         catch (Throwable throwable)
         {
